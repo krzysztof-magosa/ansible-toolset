@@ -1,0 +1,107 @@
+#!/usr/bin/env python
+
+import os
+import subprocess
+import sys
+import sqlite3
+import argparse
+from peewee import *
+
+database = SqliteDatabase(os.path.expanduser("~/.ansible-toolset.db"))
+
+class BaseModel(Model):
+    class Meta:
+        database = database
+
+
+class Wallet(BaseModel):
+    filename = CharField(unique=True, primary_key=True)
+    contents = TextField(null=True)
+    mtime = IntegerField(null=True)
+
+    class Meta:
+        pass
+
+class WalletManager():
+    def __init__(self, db):
+        self.db = db
+
+    def is_encrypted(self, filename):
+        MARKER = '$ANSIBLE_VAULT;'
+        MARKER_LEN = len(MARKER)
+
+        with file(filename, "r") as handler:
+            line = handler.readline()
+            if line[0:MARKER_LEN] == MARKER:
+                return True
+
+            return False
+
+
+    def encrypt(self, filename):
+        wallet = Wallet.get(filename=filename)
+
+        if os.path.getmtime(filename) > wallet.mtime:
+            args = [
+                "ansible-vault",
+                "encrypt",
+                filename
+            ]
+
+            process = subprocess.Popen(args)
+            process.wait()
+        else:
+            with open(filename, "w") as handler:
+                handler.write(wallet.contents)
+
+        Wallet.delete().where(Wallet.filename==filename).execute()
+
+
+    def decrypt(self, filename):
+        with open(filename, "r") as handler:
+            contents = handler.read()
+
+        args = [
+            "ansible-vault",
+            "decrypt",
+            filename
+        ]
+
+        process = subprocess.Popen(args)
+        process.wait()
+
+        wallet, _ = Wallet.get_or_create(filename=filename)
+        wallet.contents = contents
+        wallet.mtime = os.path.getmtime(filename)
+        wallet.save()
+
+
+    def is_known(self, filename):
+        return Wallet.select().where(Wallet.filename==filename).exists()
+
+    def open(self):
+        for root, _, files in os.walk("."):
+            for basename in files:
+                filename = os.path.realpath(os.path.join(root, basename))
+                if self.is_encrypted(filename):
+                    self.decrypt(filename)
+
+    def close(self):
+        for root, _, files in os.walk("."):
+            for basename in files:
+                filename = os.path.realpath(os.path.join(root, basename))
+                if self.is_known(filename):
+                    self.encrypt(filename)
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("action", choices=["open", "close"])
+args = parser.parse_args()
+
+database.create_tables([Wallet], safe=True)
+walletManager = WalletManager(db=database)
+
+if args.action == "open":
+    walletManager.open()
+elif args.action == "close":
+    walletManager.close()
