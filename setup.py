@@ -12,18 +12,6 @@ setup(
     author='Krzysztof Magosa',
     author_email='krzysztof@magosa.pl',
     license='GPLv3',
-    install_requires=[
-        str(pkg.req) for pkg in parse_requirements(
-            'requirements.txt',
-            session=pip.download.PipSession()
-        )
-    ],
-#    tests_require=[
-#        str(pkg.req) for pkg in parse_requirements(
-#            'test-requirements.txt',
-#            session=pip.download.PipSession())
-#    ],
-#    packages=['ansible_toolset'],
     scripts=[
         'bin/ats-vault'
     ]
