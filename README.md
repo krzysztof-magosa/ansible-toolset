@@ -1,4 +1,5 @@
 # Ansible Toolset
+[![PyPI version](https://badge.fury.io/py/ansible-toolset.svg)](https://badge.fury.io/py/ansible-toolset)
 
 ## Setup
 ### Install
