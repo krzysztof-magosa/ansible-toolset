@@ -14,5 +14,8 @@ setup(
     license='GPLv3',
     scripts=[
         'bin/ats-vault'
+    ],
+    install_requires=[
+        'peewee>=2.8.5'
     ]
 )
