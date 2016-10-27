@@ -14,7 +14,7 @@ class BaseModel(Model):
         database = database
 
 
-class Wallet(BaseModel):
+class Vault(BaseModel):
     filename = CharField(unique=True, primary_key=True)
     contents = TextField(null=True)
     mtime = IntegerField(null=True)
@@ -22,7 +22,7 @@ class Wallet(BaseModel):
     class Meta:
         pass
 
-class WalletManager():
+class VaultManager():
     def __init__(self, db):
         self.db = db
 
@@ -39,9 +39,9 @@ class WalletManager():
 
 
     def encrypt(self, filename):
-        wallet = Wallet.get(filename=filename)
+        vault = Vault.get(filename=filename)
 
-        if os.path.getmtime(filename) > wallet.mtime:
+        if os.path.getmtime(filename) > vault.mtime:
             args = [
                 "ansible-vault",
                 "encrypt",
@@ -52,9 +52,9 @@ class WalletManager():
             process.wait()
         else:
             with open(filename, "w") as handler:
-                handler.write(wallet.contents)
+                handler.write(vault.contents)
 
-        Wallet.delete().where(Wallet.filename==filename).execute()
+        Vault.delete().where(Vault.filename==filename).execute()
 
 
     def decrypt(self, filename):
@@ -70,14 +70,14 @@ class WalletManager():
         process = subprocess.Popen(args)
         process.wait()
 
-        wallet, _ = Wallet.get_or_create(filename=filename)
-        wallet.contents = contents
-        wallet.mtime = os.path.getmtime(filename)
-        wallet.save()
+        vault, _ = Vault.get_or_create(filename=filename)
+        vault.contents = contents
+        vault.mtime = os.path.getmtime(filename)
+        vault.save()
 
 
     def is_known(self, filename):
-        return Wallet.select().where(Wallet.filename==filename).exists()
+        return Vault.select().where(Vault.filename==filename).exists()
 
     def open(self):
         for root, _, files in os.walk("."):
@@ -98,10 +98,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument("action", choices=["open", "close"])
 args = parser.parse_args()
 
-database.create_tables([Wallet], safe=True)
-walletManager = WalletManager(db=database)
+database.create_tables([Vault], safe=True)
+vaultManager = VaultManager(db=database)
 
 if args.action == "open":
-    walletManager.open()
+    vaultManager.open()
 elif args.action == "close":
-    walletManager.close()
+    vaultManager.close()
