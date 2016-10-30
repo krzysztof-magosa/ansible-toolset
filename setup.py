@@ -12,6 +12,10 @@ setup(
     author='Krzysztof Magosa',
     author_email='krzysztof@magosa.pl',
     license='GPLv3',
+    packages=[
+        'ansible_toolset',
+        'ansible_toolset/ansible'
+    ],
     scripts=[
         'bin/ats-vault'
     ],
