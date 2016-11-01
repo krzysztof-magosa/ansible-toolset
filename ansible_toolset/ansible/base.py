@@ -7,7 +7,7 @@ class AnsibleAdapterBase:
         self.vault_password = vault_password
         self.init()
 
-    def init():
+    def init(self):
         pass
 
     def is_encrypted_vault(self, filename):
