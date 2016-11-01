@@ -29,4 +29,4 @@ elif args.action == "close":
 elif args.action == "list":
     print("Known vaults under this directory:")
     for item in vaultManager.list():
-        print(" * {}".format(item))
+        print(" * {}".format(os.path.relpath(item, os.getcwd())))
