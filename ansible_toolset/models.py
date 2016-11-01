@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from peewee import *
+from peewee import SqliteDatabase, Model, CharField, TextField, IntegerField
 
 
 class BaseModel(Model):
