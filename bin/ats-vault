@@ -17,7 +17,7 @@ init_models(C.ANSIBLE_TOOLSET_DB)
 ansible = AnsibleAdapter(vault_password=get_ansible_vault_password())
 
 parser = argparse.ArgumentParser()
-parser.add_argument("action", choices=["open", "close"])
+parser.add_argument("action", choices=["open", "close", "list"])
 args = parser.parse_args()
 
 vaultManager = VaultManager(ansible=ansible)
@@ -26,3 +26,7 @@ if args.action == "open":
     vaultManager.open()
 elif args.action == "close":
     vaultManager.close()
+elif args.action == "list":
+    print("Known vaults under this directory:")
+    for item in vaultManager.list():
+        print(" * {}".format(item))

@@ -55,3 +55,6 @@ class VaultManager:
     def close(self):
         for filename in self.list_vaults(open=True):
             self.encrypt(filename)
+
+    def list(self):
+        return self.list_vaults(open=True, closed=True)
