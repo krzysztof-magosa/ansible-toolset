@@ -1,17 +1,7 @@
 from __future__ import absolute_import
 
 import os
-from peewee import *
-
-
-class BaseModel(Model):
-    pass
-
-
-class Vault(BaseModel):
-    filename = CharField(unique=True, primary_key=True)
-    contents = TextField(null=True)
-    mtime = IntegerField(null=True)
+from ansible_toolset.models import *
 
 
 class VaultManager:

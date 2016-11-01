@@ -7,19 +7,14 @@ import subprocess
 import sys
 import sqlite3
 import argparse
-from peewee import SqliteDatabase
 from ansible_toolset import consts as C
 from ansible_toolset.utils import *
 from ansible_toolset.ansible.auto import AnsibleAdapter
 from ansible_toolset.vault import VaultManager
-from ansible_toolset.vault import Vault
-from ansible_toolset.vault import BaseModel
+from ansible_toolset.models import init_models
 
+init_models(C.ANSIBLE_TOOLSET_DB)
 ansible = AnsibleAdapter(vault_password=get_ansible_vault_password())
-
-database = SqliteDatabase(os.path.expanduser("~/.ansible-toolset.db"))
-BaseModel._meta.database = database
-database.create_tables([Vault], safe=True)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("action", choices=["open", "close"])
