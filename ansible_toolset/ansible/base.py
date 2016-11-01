@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 from ansible_toolset import utils
 
-class AnsibleAdapterBase:
+class AnsibleAdapterBase(object):
     def __init__(self, vault_password):
         self.vault_password = vault_password
         self.init()
