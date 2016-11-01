@@ -38,16 +38,22 @@ class VaultManager:
     def is_known(self, filename):
         return Vault.select().where(Vault.filename==filename).exists()
 
-    def open(self):
+    def list_vaults(self):
+        result = []
+
         for root, _, files in os.walk("."):
             for basename in files:
                 filename = os.path.realpath(os.path.join(root, basename))
-                if self.is_encrypted(filename):
-                    self.decrypt(filename)
+                result.append(filename)
+
+        return result
+
+    def open(self):
+        for filename in self.list_vaults():
+            if self.is_encrypted(filename):
+                self.decrypt(filename)
 
     def close(self):
-        for root, _, files in os.walk("."):
-            for basename in files:
-                filename = os.path.realpath(os.path.join(root, basename))
-                if self.is_known(filename):
-                    self.encrypt(filename)
+        for filename in self.list_vaults():
+            if self.is_known(filename):
+                self.encrypt(filename)
