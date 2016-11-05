@@ -12,6 +12,9 @@ class VaultManager:
         return self.ansible.is_encrypted_vault(filename)
 
     def encrypt(self, filename):
+        # in case somebody use ansible-vault manually in meantime.
+        if self.is_encrypted(filename):
+            return
         vault = Vault.get(filename=filename)
 
         if os.path.getmtime(filename) > vault.mtime:
