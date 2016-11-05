@@ -16,3 +16,6 @@ class AnsibleAdapterBase(object):
 
     def decrypt_vault(self, filename):
         raise NotImplementedError()
+
+    def vault_plaintext(self, filename):
+        raise NotImplementedError()

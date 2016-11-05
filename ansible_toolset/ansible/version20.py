@@ -18,3 +18,6 @@ class AnsibleAdapter20(AnsibleAdapterBase):
 
     def decrypt_vault(self, filename):
         self.vault_editor.decrypt_file(filename)
+
+    def vault_plaintext(self, filename):
+        return self.vault_editor.plaintext(filename)
