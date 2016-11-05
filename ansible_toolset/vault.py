@@ -1,7 +1,9 @@
 from __future__ import absolute_import
 
 import os
+import re
 from ansible_toolset.models import *
+from ansible_toolset.utils import read_file_contents
 
 
 class VaultManager:
@@ -10,6 +12,12 @@ class VaultManager:
 
     def is_encrypted(self, filename):
         return self.ansible.is_encrypted_vault(filename)
+
+    def get_content(self, filename):
+        if self.is_encrypted(filename):
+            return self.ansible.vault_plaintext(filename)
+        else:
+            return read_file_contents(filename)
 
     def encrypt(self, filename):
         # in case somebody use ansible-vault manually in meantime.
@@ -61,3 +69,18 @@ class VaultManager:
 
     def list(self):
         return self.list_vaults(open=True, closed=True)
+
+    def grep(self, pattern, use_regex=False):
+        regex = re.compile(pattern)
+
+        for item in self.list_vaults(open=True, closed=True):
+            short_path = os.path.relpath(item["path"], os.getcwd())
+            content = self.get_content(item["path"])
+
+            for index, line in enumerate(content.split("\n")):
+                if (use_regex and regex.search(line)) or (not use_regex and pattern in line):
+                    yield dict(
+                        short_path=short_path,
+                        line=line,
+                        line_number=index+1
+                    )
