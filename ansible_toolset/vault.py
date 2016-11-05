@@ -47,17 +47,17 @@ class VaultManager:
                 filename = os.path.realpath(os.path.join(root, basename))
 
                 if closed and self.is_encrypted(filename):
-                    yield filename
+                    yield dict(path=filename, state='closed')
                 elif open and self.is_known(filename):
-                    yield filename
+                    yield dict(path=filename, state='open')
 
     def open(self):
-        for filename in self.list_vaults(closed=True):
-            self.decrypt(filename)
+        for item in self.list_vaults(closed=True):
+            self.decrypt(item["path"])
 
     def close(self):
-        for filename in self.list_vaults(open=True):
-            self.encrypt(filename)
+        for item in self.list_vaults(open=True):
+            self.encrypt(item["path"])
 
     def list(self):
         return self.list_vaults(open=True, closed=True)
