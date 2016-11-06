@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import os
 import re
 from ansible_toolset.models import *
-from ansible_toolset.utils import read_file_contents
+from ansible_toolset.utils import read_file_contents, ErrorMessage
 
 
 class VaultManager:
@@ -18,6 +18,12 @@ class VaultManager:
             return self.ansible.vault_plaintext(filename)
         else:
             return read_file_contents(filename)
+
+    def create(self, filename):
+        if self.is_encrypted(filename):
+            raise ErrorMessage("Provided file is already encrypted.")
+
+        self.ansible.encrypt_vault(filename)
 
     def encrypt(self, filename):
         # in case somebody use ansible-vault manually in meantime.

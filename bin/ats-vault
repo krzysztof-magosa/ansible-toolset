@@ -13,26 +13,31 @@ from ansible_toolset.ansible.auto import AnsibleAdapter
 from ansible_toolset.vault import VaultManager
 from ansible_toolset.models import init_models
 
-init_models(C.ANSIBLE_TOOLSET_DB)
-ansible = AnsibleAdapter(vault_password=get_ansible_vault_password())
+try:
+    init_models(C.ANSIBLE_TOOLSET_DB)
+    ansible = AnsibleAdapter(vault_password=get_ansible_vault_password())
 
-parser = argparse.ArgumentParser()
-parser.add_argument("action", choices=["open", "close", "list", "grep", "rgrep"])
-parser.add_argument("argument", nargs="?")
-args = parser.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("action", choices=["open", "close", "list", "grep", "rgrep", "create"])
+    parser.add_argument("argument", nargs="?")
+    args = parser.parse_args()
 
-vaultManager = VaultManager(ansible=ansible)
+    vaultManager = VaultManager(ansible=ansible)
 
-if args.action == "open":
-    vaultManager.open()
-elif args.action == "close":
-    vaultManager.close()
-elif args.action == "list":
-    print("Known vaults under this directory:")
-    for item in vaultManager.list():
-        print(" * {} [{}]".format(os.path.relpath(item["path"], os.getcwd()), item["state"]))
-elif args.action in ["grep", "rgrep"]:
-    use_regex = args.action == "rgrep"
+    if args.action == "open":
+        vaultManager.open()
+    elif args.action == "close":
+        vaultManager.close()
+    elif args.action == "list":
+        print("Known vaults under this directory:")
+        for item in vaultManager.list():
+            print(" * {} [{}]".format(os.path.relpath(item["path"], os.getcwd()), item["state"]))
+    elif args.action in ["grep", "rgrep"]:
+        use_regex = args.action == "rgrep"
 
-    for item in vaultManager.grep(args.argument or "", use_regex=use_regex):
-        print("{}:{}:{}".format(item["short_path"], item["line_number"], item["line"]))
+        for item in vaultManager.grep(args.argument or "", use_regex=use_regex):
+            print("{}:{}:{}".format(item["short_path"], item["line_number"], item["line"]))
+    elif args.action == "create":
+        vaultManager.create(args.argument)
+except ErrorMessage as e:
+    print(e)

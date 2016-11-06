@@ -29,6 +29,13 @@ $ export ANSIBLE_VAULT_PASSWORD_FILE=~/.ansible-vault-password
 ## Commands
 ### Vault
 
+To create new vault you can use `ansible-vault` directly.  
+This command is provided for consistency and convenience.
+```
+$ ats-vault create path/to/some/secret/file.yml
+```
+
+
 Decrypt all existing vaults below current directory.
 ```
 $ ats-vault open
@@ -47,11 +54,6 @@ $ ats-vault grep word
 Grep vaults (including closed ones) against python regex:
 ```
 $ ats-vault rgrep 'word\d+'
-```
-
-To create new vault you need to use Ansible directly.  
-```
-$ ansible-vault encrypt path/to/some/secret/file.yml
 ```
 
 `ats-vault` stores previous encrypted content in SQLite database.

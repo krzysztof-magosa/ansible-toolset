@@ -3,6 +3,9 @@ from __future__ import absolute_import
 import os
 from ansible_toolset import consts as C
 
+class ErrorMessage(Exception):
+    pass
+
 def read_file_contents(filename):
     with open(filename, "rb") as fh:
         data = fh.read()
