@@ -39,6 +39,16 @@ Encrypt all previously decrypted vaults.
 $ ats-vault close
 ```
 
+Grep vaults (including closed ones) against some word:
+```
+$ ats-vault grep word
+```
+
+Grep vaults (including closed ones) against python regex:
+```
+$ ats-vault rgrep 'word\d+'
+```
+
 To create new vault you need to use Ansible directly.  
 ```
 $ ansible-vault encrypt path/to/some/secret/file.yml
