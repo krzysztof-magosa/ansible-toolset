@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name='ansible-toolset',
-    version='0.5.0',
+    version='0.6.0',
     description='Useful Ansible toolset',
     url='https://github.com/krzysztof-magosa/ansible-toolset',
     author='Krzysztof Magosa',
