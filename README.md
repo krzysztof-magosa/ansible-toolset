@@ -10,8 +10,11 @@ You can install `ansible-toolset` from PIP like other python package.
 $ pip install ansible-toolset
 ```
 
-At the moment `ansible-toolset` supports only Ansible 2.0 and 2.1.  
-Support for Ansible 2.2 will be added in upcoming days.  
+At the moment `ansible-toolset` supports only Ansible:
+* 2.0
+* 2.1
+* 2.2
+
 There is no plan to support Ansible 1.x.
 
 ### Configuration
