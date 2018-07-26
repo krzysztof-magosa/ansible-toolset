@@ -2,7 +2,6 @@ from __future__ import absolute_import
 
 import os
 import re
-import exceptions
 from ansible_toolset.models import *
 from ansible_toolset.utils import read_file_contents, ErrorMessage
 
