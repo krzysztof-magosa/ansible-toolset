@@ -65,7 +65,7 @@ class VaultManager:
                         yield dict(path=filename, state='closed')
                     elif open and self.is_known(filename):
                         yield dict(path=filename, state='open')
-                except exceptions.IOError:
+                except IOError:
                     pass
 
     def open(self):
