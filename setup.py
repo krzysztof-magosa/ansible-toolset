@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import pip.download
-from pip.req import parse_requirements
 from setuptools import setup
 
 setup(
