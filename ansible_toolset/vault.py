@@ -2,9 +2,13 @@ from __future__ import absolute_import
 
 import os
 import re
-import exceptions
 from ansible_toolset.models import *
 from ansible_toolset.utils import read_file_contents, ErrorMessage
+
+try:
+    from exceptions import IOError
+except:
+    pass
 
 
 class VaultManager:
@@ -66,7 +70,7 @@ class VaultManager:
                         yield dict(path=filename, state='closed')
                     elif open and self.is_known(filename):
                         yield dict(path=filename, state='open')
-                except exceptions.IOError:
+                except IOError:
                     pass
 
     def open(self):
